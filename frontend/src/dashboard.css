@@ -1,0 +1,33 @@
+.dash-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #a8edea, #fed6e3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dash-card {
+  background: white;
+  padding: 40px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+}
+
+.dash-card h1 {
+  color: #2c7a7b;
+}
+
+.quote {
+  font-style: italic;
+  margin: 15px 0;
+  color: #555;
+}
+
+.wellness-box {
+  margin-top: 20px;
+  background: #e6fffa;
+  padding: 15px;
+  border-radius: 10px;
+  color: #065f46;
+}

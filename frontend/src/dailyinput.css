@@ -1,0 +1,57 @@
+.daily-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #11998e, #38ef7d);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.daily-card {
+  background: #fff;
+  width: 420px;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.daily-card h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.daily-card label {
+  font-weight: 600;
+  display: block;
+  margin-top: 10px;
+}
+
+.daily-card input,
+.daily-card select,
+.daily-card textarea {
+  width: 100%;
+  margin-top: 5px;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.daily-card textarea {
+  resize: none;
+  height: 60px;
+}
+
+.daily-card button {
+  width: 100%;
+  margin-top: 20px;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  background: #11998e;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.daily-card button:hover {
+  background: #0e8c7f;
+}
