@@ -1,81 +1,59 @@
 import { useState } from "react";
-import ProfileForm from "./profile";
-import DailyInput from "./dailyinput";
-
-import BreathingGame from "./games/breathingGame";
-import FocusTapGame from "./games/focusTapGame";
-import ScribbleGame from "./games/scribbleGame";
+import MentalInput from "./modules/MentalInput";
+import PhysicalInput from "./modules/PhysicalInput";
+import NutritionInput from "./modules/NutritionInput";
 
 import "./dashboard.css";
 
 export default function Dashboard({ user }) {
-  const [profileDone, setProfileDone] = useState(false);
-  const [showDaily, setShowDaily] = useState(false);
-  const [recommendation, setRecommendation] = useState(null);
-  const [gameToPlay, setGameToPlay] = useState(null);
-
-  /* 🔒 FIRST LOGIN → PROFILE */
-  if (!profileDone) {
-    return <ProfileForm user={user} onComplete={() => setProfileDone(true)} />;
-  }
-
-  /* 🔒 NON‑SKIPPABLE GAME */
-  if (gameToPlay) {
-    if (gameToPlay === "breathing")
-      return <BreathingGame onComplete={() => setGameToPlay(null)} />;
-
-    if (gameToPlay === "focus")
-      return <FocusTapGame onComplete={() => setGameToPlay(null)} />;
-
-    if (gameToPlay === "scribble")
-      return <ScribbleGame onComplete={() => setGameToPlay(null)} />;
-  }
+  const [activeModule, setActiveModule] = useState("mental");
+  const [streak, setStreak] = useState(5); // later fetch from backend
 
   return (
-    <div className="dash-layout">
-      {/* LEFT COLUMN */}
-      <div className="dash-card">
-        <h1>Welcome, {user} 🌿</h1>
-        <p className="quote">
-          “Your wellbeing matters. One step at a time.”
-        </p>
+    <div className="dashboard-container">
+
+      {/* HEADER */}
+      <div className="dashboard-header">
+        <h2>Welcome, {user} 🌿</h2>
+        <div className="header-right">
+          <div className="streak-box">🔥 {streak} Day Streak</div>
+          <button className="report-btn">
+            📥 Download Weekly Report
+          </button>
+        </div>
       </div>
 
-      {/* RIGHT COLUMN */}
-      <div className="dash-card">
-        <h3>Daily Wellness</h3>
-
-        <button className="daily-btn" onClick={() => setShowDaily(true)}>
-          Daily Check‑In
+      {/* MODULE SELECTOR */}
+      <div className="module-tabs">
+        <button 
+          className={activeModule === "mental" ? "active" : ""}
+          onClick={() => setActiveModule("mental")}
+        >
+          🧠 Mental Wellbeing
         </button>
 
-        {recommendation && (
-          <div className="recommend-box">
-            <h4>🌟 Today’s Recommendation</h4>
-            <p>{recommendation.text}</p>
+        <button 
+          className={activeModule === "physical" ? "active" : ""}
+          onClick={() => setActiveModule("physical")}
+        >
+          🏃 Physical Wellbeing
+        </button>
 
-            <button
-              className="game-btn"
-              onClick={() => setGameToPlay(recommendation.game)}
-            >
-              Start Suggested Activity
-            </button>
-          </div>
-        )}
+        <button 
+          className={activeModule === "nutrition" ? "active" : ""}
+          onClick={() => setActiveModule("nutrition")}
+        >
+          🥗 Nutrition Lifestyle
+        </button>
       </div>
 
-      {/* DAILY INPUT POPUP */}
-      {showDaily && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <DailyInput
-              user={user}
-              onClose={() => setShowDaily(false)}
-              onResult={(rec) => setRecommendation(rec)}
-            />
-          </div>
-        </div>
-      )}
+      {/* MODULE CONTENT */}
+      <div className="module-content">
+        {activeModule === "mental" && <MentalInput user={user} />}
+        {activeModule === "physical" && <PhysicalInput user={user} />}
+        {activeModule === "nutrition" && <NutritionInput user={user} />}
+      </div>
+
     </div>
   );
 }

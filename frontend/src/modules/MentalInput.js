@@ -1,6 +1,6 @@
 import { useState } from "react";
-import API from "./api";
-import "./dailyinput.css";
+import API from "../api";
+import "./module.css";
 
 export default function DailyInput({ user, onClose, onResult }) {
   const [mood, setMood] = useState(3);
@@ -61,4 +61,4 @@ export default function DailyInput({ user, onClose, onResult }) {
       </div>
     </div>
   );
-}
+} 
