@@ -1,13 +1,16 @@
 import { useState } from "react";
 import API from "./api";
 import "./profile.css";
+import { useNavigate } from "react-router-dom";
 
-export default function ProfileForm({ user, onComplete }) {
+export default function ProfileForm({ onComplete }) {
+
   const [gender, setGender] = useState("");
   const [age, setAge] = useState("");
   const [wakeup, setWakeup] = useState("");
   const [sleep, setSleep] = useState("");
   const [interests, setInterests] = useState([]);
+  const navigate = useNavigate();
 
   const toggle = (val) => {
     setInterests(i =>
@@ -16,17 +19,26 @@ export default function ProfileForm({ user, onComplete }) {
   };
 
   const submit = async () => {
+  const username = localStorage.getItem("username");
+
+  if (!age || !gender || !wakeup || !sleep) {
+    alert("Please fill all fields");
+    return;
+  }
+
   try {
-    await API.post("/profile", {
-      username: user,
-      age_category: age.toString(),   // ✅ FIXED
+    await API.post(`/profile/${username}`, {
+      age_category: age.toString(),
       gender: gender,
-      wakeup_time: wakeup,            // ✅ FIXED
-      sleep_time: sleep,              // ✅ FIXED
-      interests: interests             // ✅ already correct
+      wakeup_time: wakeup,
+      sleep_time: sleep,
+      interests: interests
     });
 
-    onComplete();
+    alert("Profile saved successfully");
+
+    navigate("/dashboard");   // 🔥 THIS LINE REDIRECTS
+
   } catch (err) {
     console.error(err.response?.data);
     alert("Profile save failed");
@@ -37,7 +49,6 @@ export default function ProfileForm({ user, onComplete }) {
     <div className="profile-container">
       <div className="profile-card">
         <h2>Tell us about you 🌿</h2>
-        <p className="hint">This helps us personalize your wellbeing journey</p>
 
         <label>Age</label>
         <input type="number" onChange={e => setAge(e.target.value)} />

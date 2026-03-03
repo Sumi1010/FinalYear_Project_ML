@@ -22,18 +22,22 @@ export default function Login({ setUser }) {
     try {
       const url = isSignup ? "/signup" : "/login";
 
-      // Login or Signup
+      // 🔹 Login or Signup
       await API.post(url, { username, password });
 
-      // Save user globally
+      // 🔹 Save user globally + localStorage
       setUser(username);
+      localStorage.setItem("username", username);
 
-      // After login → check profile
-      const profileCheck = await API.get(`/profile/${username}`);
+      // 🔹 Check if profile exists
+      try {
+        await API.get(`/profile/${username}`);
 
-      if (profileCheck.data.exists) {
+        // If profile exists → go to dashboard
         navigate("/dashboard");
-      } else {
+
+      } catch {
+        // If profile does NOT exist → go to profile page
         navigate("/profile");
       }
 
@@ -51,24 +55,33 @@ export default function Login({ setUser }) {
           Your daily companion for a healthier mind
         </p>
 
-        <input
-          placeholder="Username"
-          value={username}
-          onChange={e => setUsername(e.target.value)}
-        />
+        <form onSubmit={(e) => { e.preventDefault(); submit(); }}>
+          
+          <input
+            type="text"
+            placeholder="Username"
+            value={username}
+            onChange={e => setUsername(e.target.value)}
+            autoComplete="username"
+            required
+          />
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-        />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            autoComplete="current-password"
+            required
+          />
 
-        {error && <p className="error">{error}</p>}
+          {error && <p className="error">{error}</p>}
 
-        <button onClick={submit}>
-          {isSignup ? "Create Account" : "Login"}
-        </button>
+          <button type="submit">
+            {isSignup ? "Create Account" : "Login"}
+          </button>
+
+        </form>
 
         <p className="switch">
           {isSignup ? "Already have an account?" : "New here?"}
@@ -76,6 +89,7 @@ export default function Login({ setUser }) {
             {isSignup ? " Login" : " Create Account"}
           </span>
         </p>
+
       </div>
     </div>
   );

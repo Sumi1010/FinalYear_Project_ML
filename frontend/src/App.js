@@ -13,16 +13,10 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Login setUser={setUser} />} />
-      
-      <Route path="/dashboard" element={<Dashboard user={user} />} />
-      
       <Route path="/profile" element={<ProfileForm user={user} />} />
-      
+      <Route path="/dashboard" element={<Dashboard user={user} />} />
       <Route path="/mental" element={<MentalPage user={user} />} />
-
-      {/* ✅ NEW PHYSICAL ROUTE */}
       <Route path="/physical" element={<PhysicalInput user={user} />} />
-
     </Routes>
   );
 }

@@ -9,27 +9,27 @@ import re
 from nlp_utils import analyze_text_sentiment
 from scoring import text_to_score
 from recommendations import generate_catchy_recommendations
-# ================= ML (TEXT → GAME) =================
 
+from typing import Optional
 
 # ================= APP =================
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3008"],
+    allow_origins=["http://localhost:3000"],  # frontend port
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ================= FILE SETUP ================= 
+# ================= FILE SETUP =================
 DATA_DIR = "data"
 os.makedirs(DATA_DIR, exist_ok=True)
 
 USERS_FILE = os.path.join(DATA_DIR, "users.csv")
 PROFILE_FILE = os.path.join(DATA_DIR, "profiles.csv")
-DAILY_FILE = os.path.join(DATA_DIR, "daily_inputs.csv")
+MENTAL_FILE = os.path.join(DATA_DIR, "mental_inputs.csv")
 
 def create_file(path, headers):
     if not os.path.exists(path):
@@ -42,9 +42,9 @@ create_file(PROFILE_FILE, [
     "username", "age_category", "gender",
     "wakeup_time", "sleep_time", "interests"
 ])
-create_file(DAILY_FILE, [
-    "username", "mood", "stress", "sleep_quality",
-    "screen_time", "physical_activity", "water_intake", "note"
+create_file(MENTAL_FILE, [
+    "username", "mood", "stress",
+    "sleep_quality", "screen_time", "note"
 ])
 
 # ================= MODELS =================
@@ -53,36 +53,35 @@ class User(BaseModel):
     password: str
 
 class Profile(BaseModel):
-    username: str
-    age_category: str
-    gender: str
-    wakeup_time: str
-    sleep_time: str
-    interests: List[str] = []   # IMPORTANT → avoids 422
+    
+    age_category: Optional[str] = ""
+    gender: Optional[str] = ""
+    wakeup_time: Optional[str] = ""
+    sleep_time: Optional[str] = ""
+    interests: List[str] = []
 
-class DailyInput(BaseModel):
+# ✅ Modified MentalInput
+class MentalInput(BaseModel):
     username: str
     mood: int
     stress: int
     sleep_quality: int
     screen_time: float
-    physical_activity: Optional[str] = ""
-    water_intake: int
     note: Optional[str] = ""
 
-# ================= ROUTES =================
+# ================= ROOT =================
 @app.get("/")
 def root():
     return {"status": "Backend running"}
 
-# ---------- AUTH ----------
+# ================= AUTH =================
 @app.post("/signup")
 def signup(user: User):
     with open(USERS_FILE, "r") as f:
         reader = csv.DictReader(f)
         for row in reader:
             if row["username"] == user.username:
-                raise HTTPException(400, "User already exists")
+                raise HTTPException(status_code=400, detail="User already exists")
 
     with open(USERS_FILE, "a", newline="") as f:
         csv.writer(f).writerow([user.username, user.password])
@@ -97,50 +96,70 @@ def login(user: User):
             if row["username"] == user.username and row["password"] == user.password:
                 return {"message": "Login successful"}
 
-    raise HTTPException(401, "Invalid credentials")
+    raise HTTPException(status_code=401, detail="Invalid credentials")
 
-# ---------- PROFILE ----------
-@app.post("/profile")
-def save_profile(profile: Profile):
+# ================= PROFILE =================
+# ================= PROFILE =================
+
+class Profile(BaseModel):
+    age_category: str
+    gender: str
+    wakeup_time: str
+    sleep_time: str
+    interests: List[str] = []
+
+@app.post("/profile/{username}")
+def save_profile(username: str, profile: Profile):
+
+    if not username:
+        raise HTTPException(status_code=400, detail="Username required")
+
     with open(PROFILE_FILE, "a", newline="") as f:
         csv.writer(f).writerow([
-            profile.username,
+            username,  # username from URL
             profile.age_category,
             profile.gender,
             profile.wakeup_time,
             profile.sleep_time,
             "|".join(profile.interests)
         ])
+
     return {"message": "Profile saved"}
 
-# ---------- DAILY INPUT ----------
-@app.post("/daily")
-def save_daily(data: DailyInput):
-    with open(DAILY_FILE, "a", newline="") as f:
+# ================= SAVE MENTAL INPUT =================
+@app.post("/mental")
+def save_mental(data: MentalInput):
+    with open(MENTAL_FILE, "a", newline="") as f:
         csv.writer(f).writerow([
             data.username,
             data.mood,
             data.stress,
             data.sleep_quality,
             data.screen_time,
-            data.physical_activity,
-            data.water_intake,
             data.note
         ])
-    return {"message": "Daily input saved"}
-@app.post("/predict")
-def predict_and_recommend(data: DailyInput):
+    return {"message": "Mental input saved"}
 
-    # NLP
+# ================= LOAD ML MODELS =================
+mood_model = joblib.load("ml/mood_model.pkl")
+
+text_model = joblib.load("ml/mood_model.pkl")
+text_vectorizer = joblib.load("ml/vectorizer.pkl")
+
+# ================= PREDICT =================
+@app.post("/predict")
+def predict_and_recommend(data: MentalInput):
+
+    # NLP sentiment
     polarity, sentiment_label = analyze_text_sentiment(data.note)
     text_score = text_to_score(polarity)
 
-    # ML
+    # ML prediction
     X = [[data.mood, data.stress, data.screen_time]]
     mood_pred = float(mood_model.predict(X)[0])
     sleep_pred = float(sleep_model.predict(X)[0])
 
-    # Recommendations
+    # Recommendation
     recommendations = generate_catchy_recommendations(
         mood_pred,
         sleep_pred,
@@ -157,8 +176,8 @@ def predict_and_recommend(data: DailyInput):
         "predicted_sleep": round(sleep_pred, 2),
         "recommendations": recommendations
     }
-text_model = joblib.load("ml/mood_model.pkl")
-text_vectorizer = joblib.load("ml/vectorizer.pkl")
+
+# ================= GAME RECOMMENDATION =================
 def clean_text(text: str):
     text = text.lower()
     text = re.sub(r"http\S+", "", text)
@@ -166,6 +185,7 @@ def clean_text(text: str):
     text = re.sub(r"#\w+", "", text)
     text = re.sub(r"[^a-z\s]", "", text)
     return text.strip()
+
 GAME_MAP = {
     "stressed": ("Your mind feels overloaded 🌿", "breathing"),
     "anxious": ("Let’s ground your thoughts 🌱", "breathing"),
@@ -174,11 +194,9 @@ GAME_MAP = {
     "tired": ("Slow down and relax 🌙", "breathing"),
     "positive": ("Stay in the flow ✨", "focus"),
 }
+
 @app.post("/recommend-game")
-def recommend_game(data: DailyInput):
-    """
-    ML‑based game recommendation from user's free‑text note
-    """
+def recommend_game(data: MentalInput):
 
     clean = clean_text(data.note)
     vec = text_vectorizer.transform([clean])
@@ -197,7 +215,3 @@ def recommend_game(data: DailyInput):
         "text": rec_text,
         "game": game
     }
-
-
-
-
