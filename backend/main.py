@@ -17,13 +17,13 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["http://localhost:3008"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ================= FILE SETUP =================
+# ================= FILE SETUP ================= 
 DATA_DIR = "data"
 os.makedirs(DATA_DIR, exist_ok=True)
 

@@ -1,6 +1,4 @@
-
 import { useNavigate } from "react-router-dom";
-
 import "./dashboard.css";
 
 export default function Dashboard({ user }) {
@@ -11,7 +9,7 @@ export default function Dashboard({ user }) {
 
       {/* HEADER SECTION */}
       <div className="dashboard-header">
-        <h1>Welcome, {user} 🌿</h1>
+        <h1>Welcome, {user ? user : "User"} 🌿</h1>
 
         <div className="stats">
           <div className="stat-card">
@@ -21,7 +19,9 @@ export default function Dashboard({ user }) {
 
           <div className="stat-card">
             <h3>📊 Weekly Report</h3>
-            <button className="report-btn">Download</button>
+            <button className="report-btn">
+              Download
+            </button>
           </div>
         </div>
       </div>
