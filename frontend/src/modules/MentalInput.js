@@ -1,64 +1,132 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import API from "../api";
-import "./module.css";
 
-export default function DailyInput({ user, onClose, onResult }) {
+import BreathingGame from "../games/breathingGame";
+import FocusTapGame from "../games/focusTapGame";
+import ScribbleGame from "../games/scribbleGame";
+
+import "./mental.css";
+
+export default function MentalPage({ user }) {
+  const navigate = useNavigate();
+
+  // Form State
   const [mood, setMood] = useState(3);
   const [stress, setStress] = useState(3);
   const [sleepQuality, setSleepQuality] = useState(3);
   const [screenTime, setScreenTime] = useState("");
-  const [water, setWater] = useState("");
   const [note, setNote] = useState("");
 
+  const [gameToPlay, setGameToPlay] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
   const submit = async () => {
+    setError("");
+
+    if (screenTime === "") {
+      setError("Please enter your screen time.");
+      return;
+    }
+
     const payload = {
       username: user,
-      mood,
-      stress,
-      sleep_quality: sleepQuality,
-      screen_time: parseFloat(screenTime),
-      physical_activity: "",
-      water_intake: parseInt(water),
-      note
+      mood: Number(mood),
+      stress: Number(stress),
+      sleep_quality: Number(sleepQuality),
+      screen_time: Number(screenTime),
+      note: note || ""
     };
 
-    await API.post("/daily", payload);
+    try {
+      setLoading(true);
 
-    const res = await API.post("/recommend-game", payload);
-
-    onResult(res.data);
-    onClose();
+      // Save daily input
+      const res = await API.post("/daily", payload);
+      setGameToPlay(res.data.game);
+    } catch (err) {
+      console.error(err);
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
+  /* 🔒 NON-SKIPPABLE GAME FLOW */
+  if (gameToPlay === "breathing") {
+    return <BreathingGame onComplete={() => navigate("/dashboard")} />;
+  }
+
+  if (gameToPlay === "focus") {
+    return <FocusTapGame onComplete={() => navigate("/dashboard")} />;
+  }
+
+  if (gameToPlay === "scribble") {
+    return <ScribbleGame onComplete={() => navigate("/dashboard")} />;
+  }
+
   return (
-    <div className="daily-card">
-      <h2>Daily Check‑In 🌼</h2>
+    <div className="mental-container">
+      <div className="mental-card">
+        <h2>Mental Wellness Check‑In 🧠</h2>
 
-      <label>Mood (1–5)</label>
-      <input type="range" min="1" max="5"
-        value={mood} onChange={e => setMood(e.target.value)} />
+        {error && <p className="error">{error}</p>}
 
-      <label>Stress (1–5)</label>
-      <input type="range" min="1" max="5"
-        value={stress} onChange={e => setStress(e.target.value)} />
+        <label>Mood (1–5)</label>
+        <input
+          type="range"
+          min="1"
+          max="5"
+          value={mood}
+          onChange={(e) => setMood(Number(e.target.value))}
+        />
+        <span className="value-display">{mood}</span>
 
-      <label>Sleep Quality (1–5)</label>
-      <input type="range" min="1" max="5"
-        value={sleepQuality} onChange={e => setSleepQuality(e.target.value)} />
+        <label>Stress (1–5)</label>
+        <input
+          type="range"
+          min="1"
+          max="5"
+          value={stress}
+          onChange={(e) => setStress(Number(e.target.value))}
+        />
+        <span className="value-display">{stress}</span>
 
-      <label>Screen Time (hours)</label>
-      <input type="number" onChange={e => setScreenTime(e.target.value)} />
+        <label>Sleep Quality (1–5)</label>
+        <input
+          type="range"
+          min="1"
+          max="5"
+          value={sleepQuality}
+          onChange={(e) => setSleepQuality(Number(e.target.value))}
+        />
+        <span className="value-display">{sleepQuality}</span>
 
-      <label>Water Intake (glasses)</label>
-      <input type="number" onChange={e => setWater(e.target.value)} />
+        <label>Screen Time (hours)</label>
+        <input
+          type="number"
+          min="0"
+          step="0.5"
+          value={screenTime}
+          onChange={(e) => setScreenTime(e.target.value)}
+        />
 
-      <label>Notes</label>
-      <textarea onChange={e => setNote(e.target.value)} />
+        <label>Notes</label>
+        <textarea
+          placeholder="Write anything about your day..."
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+        />
 
-      <div className="actions">
-        <button onClick={submit}>Submit</button>
-        <button className="cancel" onClick={onClose}>Cancel</button>
+        <button
+          className="submit-btn"
+          onClick={submit}
+          disabled={loading}
+        >
+          {loading ? "Processing..." : "Submit & Get Activity"}
+        </button>
       </div>
     </div>
   );
-} 
+}

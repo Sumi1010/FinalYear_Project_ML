@@ -1,20 +1,45 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import API from "./api";
 import "./auth.css";
 
 export default function Login({ setUser }) {
+  const navigate = useNavigate();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isSignup, setIsSignup] = useState(false);
   const [error, setError] = useState("");
 
   const submit = async () => {
+    setError("");
+
+    if (!username || !password) {
+      setError("Please enter username and password.");
+      return;
+    }
+
     try {
       const url = isSignup ? "/signup" : "/login";
+
+      // Login or Signup
       await API.post(url, { username, password });
+
+      // Save user globally
       setUser(username);
-    } catch {
-      setError("Something went wrong. Try again.");
+
+      // After login → check profile
+      const profileCheck = await API.get(`/profile/${username}`);
+
+      if (profileCheck.data.exists) {
+        navigate("/dashboard");
+      } else {
+        navigate("/profile");
+      }
+
+    } catch (err) {
+      console.error(err);
+      setError("Invalid credentials or user already exists.");
     }
   };
 
@@ -28,11 +53,14 @@ export default function Login({ setUser }) {
 
         <input
           placeholder="Username"
+          value={username}
           onChange={e => setUsername(e.target.value)}
         />
+
         <input
           type="password"
           placeholder="Password"
+          value={password}
           onChange={e => setPassword(e.target.value)}
         />
 

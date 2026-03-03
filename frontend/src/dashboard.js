@@ -1,57 +1,76 @@
-import { useState } from "react";
-import MentalInput from "./modules/MentalInput";
-import PhysicalInput from "./modules/PhysicalInput";
-import NutritionInput from "./modules/NutritionInput";
+
+import { useNavigate } from "react-router-dom";
 
 import "./dashboard.css";
 
 export default function Dashboard({ user }) {
-  const [activeModule, setActiveModule] = useState("mental");
-  const [streak, setStreak] = useState(5); // later fetch from backend
+  const navigate = useNavigate();
 
   return (
     <div className="dashboard-container">
 
-      {/* HEADER */}
+      {/* HEADER SECTION */}
       <div className="dashboard-header">
-        <h2>Welcome, {user} 🌿</h2>
-        <div className="header-right">
-          <div className="streak-box">🔥 {streak} Day Streak</div>
-          <button className="report-btn">
-            📥 Download Weekly Report
-          </button>
+        <h1>Welcome, {user} 🌿</h1>
+
+        <div className="stats">
+          <div className="stat-card">
+            <h3>🔥 Daily Streak</h3>
+            <p>5 Days</p>
+          </div>
+
+          <div className="stat-card">
+            <h3>📊 Weekly Report</h3>
+            <button className="report-btn">Download</button>
+          </div>
         </div>
       </div>
 
-      {/* MODULE SELECTOR */}
-      <div className="module-tabs">
-        <button 
-          className={activeModule === "mental" ? "active" : ""}
-          onClick={() => setActiveModule("mental")}
-        >
-          🧠 Mental Wellbeing
-        </button>
+      {/* MODULE SECTION */}
+      <div className="modules-wrapper">
 
-        <button 
-          className={activeModule === "physical" ? "active" : ""}
-          onClick={() => setActiveModule("physical")}
-        >
-          🏃 Physical Wellbeing
-        </button>
+        {/* MENTAL WELLBEING */}
+        <div className="module-card mental">
+          <h2>Mental Wellbeing</h2>
+          <p className="quote">
+            "Your mind deserves the same care as your body."
+          </p>
+          <button
+            className="module-btn"
+            onClick={() => navigate("/mental")}
+          >
+            Daily Check‑In
+          </button>
+        </div>
 
-        <button 
-          className={activeModule === "nutrition" ? "active" : ""}
-          onClick={() => setActiveModule("nutrition")}
-        >
-          🥗 Nutrition Lifestyle
-        </button>
-      </div>
+        {/* PHYSICAL WELLBEING */}
+        <div className="module-card physical">
+          <h2>Physical Wellbeing</h2>
+          <p className="quote">
+            "Move your body. Strengthen your life."
+          </p>
+          <button
+            className="module-btn"
+            onClick={() => navigate("/physical")}
+          >
+            Daily Check‑In
+          </button>
+        </div>
 
-      {/* MODULE CONTENT */}
-      <div className="module-content">
-        {activeModule === "mental" && <MentalInput user={user} />}
-        {activeModule === "physical" && <PhysicalInput user={user} />}
-        {activeModule === "nutrition" && <NutritionInput user={user} />}
+        {/* NUTRITION MODULE */}
+        <div className="module-card nutrition">
+          <h2>Nutritional Lifestyle</h2>
+          <p className="quote">
+            "Fuel your body with what it truly needs."
+          </p>
+          <button
+            className="module-btn"
+            onClick={() => navigate("/nutrition")}
+          >
+            Daily Check‑In
+          </button>
+        </div>
+
       </div>
 
     </div>
