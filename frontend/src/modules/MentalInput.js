@@ -23,37 +23,48 @@ export default function MentalPage({ user }) {
   const [error, setError] = useState("");
 
   const submit = async () => {
-    setError("");
+  setError("");
 
-    if (screenTime === "") {
-      setError("Please enter your screen time.");
-      return;
-    }
+  if (!screenTime) {
+    setError("Please enter your screen time.");
+    return;
+  }
 
-    const payload = {
-      username: user,
-      mood: Number(mood),
-      stress: Number(stress),
-      sleep_quality: Number(sleepQuality),
-      screen_time: Number(screenTime),
-      note: note || ""
-    };
-
-    try {
-      setLoading(true);
-
-      // Save daily input
-      const res = await API.post("/daily", payload);
-      setGameToPlay(res.data.game);
-    } catch (err) {
-      console.error(err);
-      setError("Something went wrong. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+  const payload = {
+    username: user,
+    mood: Number(mood),
+    stress: Number(stress),
+    sleep_quality: Number(sleepQuality),
+    screen_time: Number(screenTime),
+    note: note || ""
   };
 
-  /* 🔒 NON-SKIPPABLE GAME FLOW */
+  try {
+    setLoading(true);
+
+    // 1️⃣ Save mental input
+    await API.post("/mental", payload);
+
+    // 2️⃣ Get recommended game
+    const gameRes = await API.post("/recommend-game", payload);
+
+    console.log("GAME RESPONSE:", gameRes.data);
+
+    if (gameRes.data && gameRes.data.game) {
+      setGameToPlay(gameRes.data.game);
+    } else {
+      setError("Game not returned from server.");
+    }
+
+  } catch (err) {
+    console.error("API ERROR:", err);
+    setError("Something went wrong. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+};
+
+  /* 🔒 GAME RENDERING */
   if (gameToPlay === "breathing") {
     return <BreathingGame onComplete={() => navigate("/dashboard")} />;
   }

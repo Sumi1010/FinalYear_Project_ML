@@ -1,9 +1,10 @@
 /* MAIN DASHBOARD */
 .dashboard-container {
   padding: 40px;
-  background: #f5f6fa;
+  
   min-height: 100vh;
   font-family: 'Segoe UI', sans-serif;
+  color: black;
 }
 
 /* HEADER */
@@ -53,17 +54,15 @@
 
 /* MODULE CARD */
 .module-card {
-  flex: 1;
-  padding: 30px;
-  border-radius: 20px;
-  color: white;
-  min-height: 220px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-  transition: transform 0.3s ease;
+    
+    padding: 30px;
+    border-radius: 12px;
+    max-width: 500px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease;
+    
 }
+
 
 .module-card:hover {
   transform: translateY(-5px);
@@ -84,8 +83,11 @@
   padding: 10px;
   border: none;
   border-radius: 10px;
-  background: rgba(255,255,255,0.9);
-  color: black;
+  
+  background: white;
+  color: #2d3436;
+
+  
   cursor: pointer;
   font-weight: 600;
   transition: 0.3s;
