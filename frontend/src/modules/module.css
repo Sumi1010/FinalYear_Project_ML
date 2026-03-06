@@ -3,7 +3,7 @@
   padding: 30px;
   border-radius: 12px;
   max-width: 500px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
 
 .module-card h3 {
@@ -30,4 +30,200 @@
   border: none;
   border-radius: 6px;
   cursor: pointer;
+}
+
+/* Physical Wellness Styles */
+.physical-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.physical-card {
+  width: 100%;
+  max-width: 450px;
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+}
+
+.physical-title {
+  margin-bottom: 20px;
+  color: #2d3436;
+  text-align: center;
+  font-size: 24px;
+}
+
+.physical-label {
+  margin-top: 15px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4a4a4a;
+}
+
+.physical-input,
+.physical-textarea {
+  margin-top: 5px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.3s;
+}
+
+.physical-input:focus,
+.physical-textarea:focus {
+  border-color: #10b981;
+  outline: none;
+}
+
+.physical-slider {
+  margin-top: 5px;
+  width: 100%;
+  accent-color: #10b981;
+}
+
+.physical-btn {
+  margin-top: 25px;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: #10b981;
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.physical-btn:hover {
+  background: #059669;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+}
+
+.physical-game-container {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.physical-game-container p {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/* Nutrition Wellness Styles */
+.nutrition-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #d4fc79 0%, #f6d365 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.nutrition-card {
+  width: 100%;
+  max-width: 500px;
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+}
+
+.nutrition-card h3 {
+  text-align: center;
+  color: #2d3436;
+  margin-bottom: 20px;
+}
+
+.nutrition-label {
+  margin-top: 15px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4a4a4a;
+}
+
+.nutrition-input,
+.nutrition-select {
+  margin-top: 5px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.3s;
+}
+
+.nutrition-input:focus,
+.nutrition-select:focus {
+  border-color: #f6d365;
+  outline: none;
+}
+
+.nutrition-btn {
+  margin-top: 25px;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #d4fc79 0%, #f6d365 100%);
+  color: #2d3436;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.nutrition-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(246, 211, 101, 0.4);
+}
+
+.food-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.food-item {
+  background: #fdfbfb;
+  border: 2px solid #eee;
+  border-radius: 12px;
+  padding: 15px 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.food-item:hover {
+  transform: scale(1.05);
+  border-color: #d4fc79;
+}
+
+.food-emoji {
+  font-size: 40px;
+  display: block;
+  margin-bottom: 5px;
 }

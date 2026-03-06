@@ -30,6 +30,9 @@ os.makedirs(DATA_DIR, exist_ok=True)
 USERS_FILE = os.path.join(DATA_DIR, "users.csv")
 PROFILE_FILE = os.path.join(DATA_DIR, "profiles.csv")
 MENTAL_FILE = os.path.join(DATA_DIR, "mental_inputs.csv")
+PHYSICAL_FILE = os.path.join(DATA_DIR, "physical_inputs.csv")
+NUTRITION_FILE = os.path.join(DATA_DIR, "nutrition_inputs.csv")
+
 
 def create_file(path, headers):
     if not os.path.exists(path):
@@ -45,6 +48,14 @@ create_file(PROFILE_FILE, [
 create_file(MENTAL_FILE, [
     "username", "mood", "stress",
     "sleep_quality", "screen_time", "note"
+])
+create_file(PHYSICAL_FILE, [
+    "username", "exercise_minutes", "water_intake",
+    "steps", "energy_level", "note"
+])
+create_file(NUTRITION_FILE, [
+    "username", "meal_type", "water_intake", 
+    "fruit_veg_servings", "junk_food", "energy_level"
 ])
 
 # ================= MODELS =================
@@ -68,6 +79,23 @@ class MentalInput(BaseModel):
     sleep_quality: int
     screen_time: float
     note: Optional[str] = ""
+
+class PhysicalInputModel(BaseModel):
+    username: str
+    exercise_minutes: int
+    water_intake: float
+    steps: int
+    energy_level: int
+    note: Optional[str] = ""
+
+class NutritionInputModel(BaseModel):
+    username: str
+    meal_type: str
+    water_intake: int
+    fruit_veg_servings: int
+    junk_food: str
+    energy_level: str
+
 
 # ================= ROOT =================
 @app.get("/")
@@ -139,6 +167,35 @@ def save_mental(data: MentalInput):
             data.note
         ])
     return {"message": "Mental input saved"}
+
+# ================= SAVE PHYSICAL INPUT =================
+@app.post("/physical")
+def save_physical(data: PhysicalInputModel):
+    with open(PHYSICAL_FILE, "a", newline="") as f:
+        csv.writer(f).writerow([
+            data.username,
+            data.exercise_minutes,
+            data.water_intake,
+            data.steps,
+            data.energy_level,
+            data.note
+        ])
+    return {"message": "Physical input saved"}
+
+# ================= SAVE NUTRITION INPUT =================
+@app.post("/nutrition")
+def save_nutrition(data: NutritionInputModel):
+    with open(NUTRITION_FILE, "a", newline="") as f:
+        csv.writer(f).writerow([
+            data.username,
+            data.meal_type,
+            data.water_intake,
+            data.fruit_veg_servings,
+            data.junk_food,
+            data.energy_level
+        ])
+    return {"message": "Nutrition input saved"}
+
 
 # ================= LOAD ML MODELS =================
 mood_model = joblib.load("ml/mood_model.pkl")
