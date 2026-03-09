@@ -71,6 +71,20 @@ export default function Dashboard({ user }) {
           </button>
         </div>
 
+        {/* HABIT TRACKING MODULE */}
+        <div className="module-card habit-tracking">
+          <h2>Habit Tracking</h2>
+          <p className="quote">
+            "Building good habits, one day at a time."
+          </p>
+          <button
+            className="module-btn"
+            onClick={() => navigate("/habit-tracking")}
+          >
+            Habit Tracking
+          </button>
+        </div>
+
       </div>
 
     </div>

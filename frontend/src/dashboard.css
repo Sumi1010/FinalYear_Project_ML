@@ -1,7 +1,7 @@
 /* MAIN DASHBOARD */
 .dashboard-container {
   padding: 40px;
-  
+
   min-height: 100vh;
   font-family: 'Segoe UI', sans-serif;
   color: black;
@@ -27,7 +27,7 @@
   background: white;
   padding: 20px;
   border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
   width: 220px;
 }
 
@@ -54,13 +54,13 @@
 
 /* MODULE CARD */
 .module-card {
-    
-    padding: 30px;
-    border-radius: 12px;
-    max-width: 500px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-    transition: transform 0.3s ease;
-    
+
+  padding: 30px;
+  border-radius: 12px;
+  max-width: 500px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease;
+
 }
 
 
@@ -83,11 +83,11 @@
   padding: 10px;
   border: none;
   border-radius: 10px;
-  
+
   background: white;
   color: #2d3436;
 
-  
+
   cursor: pointer;
   font-weight: 600;
   transition: 0.3s;
@@ -108,4 +108,8 @@
 
 .nutrition {
   background: linear-gradient(135deg, #fd9644, #f7b731);
+}
+
+.habit-tracking {
+  background: linear-gradient(135deg, #ff7675, #fab1a0);
 }

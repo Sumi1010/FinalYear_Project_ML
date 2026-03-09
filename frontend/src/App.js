@@ -7,6 +7,7 @@ import ProfileForm from "./profile";
 import MentalPage from "./modules/MentalInput";
 import PhysicalInput from "./modules/PhysicalInput";
 import NutritionInput from "./modules/NutritionInput";
+import HabitTracking from "./modules/HabitTracking";
 
 function App() {
   const [user, setUser] = useState("");
@@ -19,6 +20,7 @@ function App() {
       <Route path="/mental" element={<MentalPage user={user} />} />
       <Route path="/physical" element={<PhysicalInput user={user} />} />
       <Route path="/nutrition" element={<NutritionInput user={user} />} />
+      <Route path="/habit-tracking" element={<HabitTracking user={user} />} />
     </Routes>
   );
 }
