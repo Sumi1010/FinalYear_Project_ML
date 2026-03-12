@@ -1,8 +1,44 @@
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./dashboard.css";
 
 export default function Dashboard({ user }) {
   const navigate = useNavigate();
+  const [streakData, setStreakData] = useState({
+    streak: 0,
+    badge: "Loading...",
+    activityDates: []
+  });
+
+  useEffect(() => {
+    const fetchStreak = async () => {
+      try {
+        const username = user || "testuser";
+        const response = await fetch(`http://localhost:8000/streak/${username}`);
+        if (response.ok) {
+          const data = await response.json();
+          setStreakData({
+            streak: data.streak,
+            badge: data.badge,
+            activityDates: data.activity_dates
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching streak:", error);
+      }
+    };
+    fetchStreak();
+  }, [user]);
+
+  const today = new Date();
+  const calendarGrid = [];
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const dateStr = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, '0') + "-" + String(d.getDate()).padStart(2, '0');
+    const isActive = streakData.activityDates.includes(dateStr);
+    calendarGrid.push({ date: dateStr, isActive });
+  }
 
   return (
     <div className="dashboard-container">
@@ -11,17 +47,33 @@ export default function Dashboard({ user }) {
       <div className="dashboard-header">
         <h1>Welcome, {user ? user : "User"} 🌿</h1>
 
-        <div className="stats">
-          <div className="stat-card">
+        <div className="streak-section">
+          <div className="streak-card">
             <h3>🔥 Daily Streak</h3>
-            <p>5 Days</p>
+            <p className="streak-count">🔥 {streakData.streak} Day Streak</p>
+            <p className="streak-msg">
+              {streakData.streak === 0 ? "Start your journey today!" :
+                streakData.streak >= 7 ? "You're on fire! Keep the momentum!" :
+                  "Consistency builds healthy habits!"}
+            </p>
           </div>
 
-          <div className="stat-card">
-            <h3>📊 Weekly Report</h3>
-            <button className="report-btn">
-              Download
-            </button>
+          <div className="badge-card">
+            <h3>Earned Badge</h3>
+            <p className="badge-name">{streakData.badge}</p>
+          </div>
+
+          <div className="calendar-card">
+            <h3>📅 Activity Calendar</h3>
+            <div className="calendar-grid">
+              {calendarGrid.map((day, idx) => (
+                <div
+                  key={idx}
+                  className={`calendar-cell ${day.isActive ? "active" : "missed"}`}
+                  title={day.date}
+                ></div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

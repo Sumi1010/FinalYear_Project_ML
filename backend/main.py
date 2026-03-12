@@ -6,6 +6,7 @@ import csv
 import os
 import joblib
 import re
+from datetime import datetime, timedelta
 from nlp_utils import analyze_text_sentiment
 from scoring import text_to_score
 from recommendations import generate_catchy_recommendations
@@ -32,6 +33,7 @@ PROFILE_FILE = os.path.join(DATA_DIR, "profiles.csv")
 MENTAL_FILE = os.path.join(DATA_DIR, "mental_inputs.csv")
 PHYSICAL_FILE = os.path.join(DATA_DIR, "physical_inputs.csv")
 NUTRITION_FILE = os.path.join(DATA_DIR, "nutrition_inputs.csv")
+STREAKS_FILE = os.path.join(DATA_DIR, "streaks.csv")
 
 
 def create_file(path, headers):
@@ -56,6 +58,9 @@ create_file(PHYSICAL_FILE, [
 create_file(NUTRITION_FILE, [
     "username", "meal_type", "water_intake", 
     "fruit_veg_servings", "junk_food", "energy_level"
+])
+create_file(STREAKS_FILE, [
+    "username", "streak", "last_login", "activity_dates"
 ])
 
 # ================= MODELS =================
@@ -195,6 +200,73 @@ def save_nutrition(data: NutritionInputModel):
             data.energy_level
         ])
     return {"message": "Nutrition input saved"}
+
+# ================= STREAK SYSTEM =================
+def get_streak_badge(streak: int) -> str:
+    if streak >= 30:
+        return "Wellness Master 🥇"
+    elif streak >= 14:
+        return "Consistent 🥈"
+    elif streak >= 7:
+        return "Beginner 🏅"
+    else:
+        return "Getting Started"
+
+@app.get("/streak/{username}")
+def get_streak(username: str):
+    today = datetime.now().date()
+    yesterday = today - timedelta(days=1)
+    
+    streak_data = {}
+    if os.path.exists(STREAKS_FILE):
+        with open(STREAKS_FILE, "r", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                streak_data[row["username"]] = row
+                
+    if username in streak_data:
+        user_streak = streak_data[username]
+        last_login_str = user_streak["last_login"]
+        streak_count = int(user_streak["streak"])
+        activity_dates = user_streak["activity_dates"].split("|") if user_streak["activity_dates"] else []
+        
+        last_login_date = datetime.strptime(last_login_str, "%Y-%m-%d").date() if last_login_str else None
+        
+        if last_login_date == yesterday:
+            streak_count += 1
+        elif last_login_date == today:
+            pass
+        else:
+            streak_count = 1
+            
+        if str(today) not in activity_dates:
+            activity_dates.append(str(today))
+            
+    else:
+        streak_count = 1
+        activity_dates = [str(today)]
+        
+    badge = get_streak_badge(streak_count)
+    
+    streak_data[username] = {
+        "username": username,
+        "streak": str(streak_count),
+        "last_login": str(today),
+        "activity_dates": "|".join(activity_dates)
+    }
+    
+    with open(STREAKS_FILE, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=["username", "streak", "last_login", "activity_dates"])
+        writer.writeheader()
+        for row in streak_data.values():
+            writer.writerow(row)
+            
+    return {
+        "username": username,
+        "streak": streak_count,
+        "badge": badge,
+        "activity_dates": activity_dates
+    }
 
 
 # ================= LOAD ML MODELS =================
