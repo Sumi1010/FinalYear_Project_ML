@@ -1,0 +1,66 @@
+.motivation-popup-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.motivation-popup-card {
+  background: linear-gradient(135deg, #ffffff, #fdfbfb);
+  width: 90%;
+  max-width: 400px;
+  border-radius: 20px;
+  padding: 30px 25px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  position: relative;
+  transform: translateY(20px);
+  animation: slideUp 0.4s ease-out forwards;
+}
+
+@keyframes slideUp {
+  to { transform: translateY(0); }
+}
+
+.close-popup {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #888;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.close-popup:hover {
+  color: #333;
+}
+
+.motivation-icon {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+.motivation-title {
+  font-size: 22px;
+  color: #333;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.motivation-text {
+  font-size: 16px;
+  color: #555;
+  line-height: 1.5;
+}

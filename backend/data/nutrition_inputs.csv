@@ -1,2 +1,4 @@
-username,meal_type,water_intake,fruit_veg_servings,junk_food,energy_level
-sumithra_m,Breakfast,3,3,No,Medium
+username,meal_type,water_intake,fruit_veg_servings,junk_food,energy_level,date
+sumithra_m,Breakfast,3,3,No,Medium,2026-03-13
+sumithra_m,Dinner,2,2,Yes,Low,2026-03-13
+sumithra_m,Breakfast,1,0,No,Medium,2026-03-13

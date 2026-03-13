@@ -1,200 +1,318 @@
-/* MAIN DASHBOARD */
+/* dashboard.css */
+
 .dashboard-container {
   padding: 40px;
-
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: 'Inter', sans-serif;
+  color: #333;
+  background-color: #f9fbfd;
   min-height: 100vh;
-  font-family: 'Segoe UI', sans-serif;
-  color: black;
 }
 
-/* HEADER */
-.dashboard-header {
+/* TOP SECTION */
+.dashboard-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  background: white;
+  padding: 20px 30px;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.avatar {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+  color: white;
+  font-size: 28px;
+  font-weight: 700;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  box-shadow: 0 4px 10px rgba(161, 196, 253, 0.4);
+}
+
+.welcome-text h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.welcome-text p {
+  margin: 5px 0 0;
+  color: #7f8c8d;
+  font-size: 16px;
+}
+
+.weekly-report-btn {
+  background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+  border: none;
+  padding: 12px 24px;
+  border-radius: 12px;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(166, 193, 238, 0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.weekly-report-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(166, 193, 238, 0.6);
+}
+
+/* SECOND SECTION: Metrics */
+.metrics-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
   margin-bottom: 40px;
 }
 
-.dashboard-header h1 {
-  font-size: 28px;
-  margin-bottom: 20px;
-}
-
-/* STREAK SECTION */
-.streak-section {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 30px;
-  flex-wrap: wrap;
-}
-
-.streak-card {
-  background: linear-gradient(135deg, #ff9f43, #ff6b6b);
-  padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  color: white;
+.metric-card {
   flex: 1;
-  min-width: 250px;
-  transition: transform 0.3s ease;
+  min-width: 280px;
+  background: white;
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s;
 }
 
-.streak-card:hover {
+.metric-card:hover {
   transform: translateY(-5px);
 }
 
-.streak-card h3 {
-  margin-bottom: 10px;
-  font-size: 16px;
-  opacity: 0.9;
+.metric-card h3 {
+  margin: 0 0 20px;
+  font-size: 18px;
+  color: #7f8c8d;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-.streak-count {
-  font-size: 28px;
-  font-weight: bold;
-  margin: 10px 0;
-}
-
-.streak-msg {
-  font-size: 14px;
-  opacity: 0.9;
-}
-
-.badge-card {
-  background: linear-gradient(135deg, #a29bfe, #6c5ce7);
-  padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  color: white;
-  flex: 1;
-  min-width: 250px;
-  transition: transform 0.3s ease;
+/* Score Card */
+.circular-progress {
+  position: relative;
+  width: 100px;
+  height: 100px;
   display: flex;
-  flex-direction: column;
+  align-items: center;
   justify-content: center;
 }
 
-.badge-card:hover {
-  transform: translateY(-5px);
+.circular-progress svg {
+  transform: rotate(-90deg);
+  width: 100px;
+  height: 100px;
 }
 
-.badge-card h3 {
-  margin-bottom: 10px;
-  font-size: 16px;
-  opacity: 0.9;
+.circle-bg {
+  fill: none;
+  stroke: #f0f0f0;
+  stroke-width: 8;
 }
 
-.badge-name {
-  font-size: 22px;
-  font-weight: bold;
+.circle-progress {
+  fill: none;
+  stroke: #4facfe;
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s ease-out;
 }
 
-.calendar-card {
-  background: linear-gradient(135deg, #74b9ff, #0984e3);
-  padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  color: white;
-  flex: 1;
-  min-width: 300px;
-  transition: transform 0.3s ease;
-}
-
-.calendar-card:hover {
-  transform: translateY(-5px);
-}
-
-.calendar-card h3 {
-  margin-bottom: 15px;
-  font-size: 16px;
-  opacity: 0.9;
-}
-
-.calendar-grid {
+.score-value {
+  position: absolute;
   display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  color: #2c3e50;
+}
+
+.score-value span {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.score-value small {
+  font-size: 12px;
+  color: #95a5a6;
+}
+
+.score-label {
+  margin-top: 15px;
+  font-weight: 500;
+  color: #34495e;
+}
+
+/* Streak Card */
+.streak-display {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 48px;
+  font-weight: 800;
+  color: #ff9a44;
+}
+
+.streak-msg {
+  color: #7f8c8d;
+  font-size: 14px;
+  margin: 10px 0;
+  text-align: center;
+}
+
+.badge-display {
+  background: #fdfbfb;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+  color: #2c3e50;
+  border: 1px solid #eee;
+}
+
+/* Calendar Card */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 6px;
+  margin-top: 10px;
 }
 
 .calendar-cell {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   border-radius: 4px;
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: #ebedf0;
+  transition: background-color 0.3s;
 }
 
 .calendar-cell.active {
-  background-color: #2ecc71;
-  box-shadow: 0 0 5px rgba(46, 204, 113, 0.5);
+  background-color: #40c463;
 }
 
-.calendar-cell.missed {
-  background-color: rgba(255, 255, 255, 0.2);
+.calendar-label {
+  margin-top: 15px;
+  font-size: 13px;
+  color: #bdc3c7;
 }
 
-/* MODULE SECTION */
+/* THIRD SECTION: Modules Wrapper */
 .modules-wrapper {
-  display: flex;
-  gap: 25px;
-  margin-top: 30px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
 }
 
-/* MODULE CARD */
+/* MODULE CARDS BASE */
 .module-card {
-
+  background: white;
+  border-radius: 20px;
   padding: 30px;
-  border-radius: 12px;
-  max-width: 500px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-  transition: transform 0.3s ease;
-
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
 }
-
 
 .module-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-8px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+}
+
+.module-icon {
+  font-size: 50px;
+  margin-bottom: 15px;
 }
 
 .module-card h2 {
   font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 10px;
+  color: #2c3e50;
 }
 
 .quote {
-  font-style: italic;
-  margin: 15px 0;
   font-size: 14px;
+  font-style: italic;
+  color: #7f8c8d;
+  margin-bottom: 20px;
+  flex-grow: 1;
 }
 
-/* BUTTON */
-.module-btn {
-  padding: 10px;
-  border: none;
-  border-radius: 10px;
-
-  background: white;
-  color: #2d3436;
-
-
-  cursor: pointer;
+.module-score {
+  font-size: 14px;
   font-weight: 600;
-  transition: 0.3s;
+  color: #2ecc71;
+  background: rgba(46, 204, 113, 0.1);
+  padding: 5px 10px;
+  border-radius: 10px;
+  display: inline-block;
+  margin-bottom: 20px;
+}
+
+.module-btn {
+  width: 100%;
+  padding: 12px 0;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: white;
+}
+
+/* Specific Module Gradients */
+.module-card.mental {
+  border-top: 5px solid #a18cd1;
+}
+.module-card.mental .module-btn {
+  background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+}
+
+.module-card.physical {
+  border-top: 5px solid #ff9a44;
+}
+.module-card.physical .module-btn {
+  background: linear-gradient(135deg, #ff9a44 0%, #fc6076 100%);
+}
+
+.module-card.nutrition {
+  border-top: 5px solid #43e97b;
+}
+.module-card.nutrition .module-btn {
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+.module-card.habit-tracking {
+  border-top: 5px solid #4facfe;
+}
+.module-card.habit-tracking .module-btn {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
 }
 
 .module-btn:hover {
-  background: white;
-}
-
-/* COLOR THEMES */
-.mental {
-  background: linear-gradient(135deg, #6c5ce7, #a29bfe);
-}
-
-.physical {
-  background: linear-gradient(135deg, #00b894, #55efc4);
-}
-
-.nutrition {
-  background: linear-gradient(135deg, #fd9644, #f7b731);
-}
-
-.habit-tracking {
-  background: linear-gradient(135deg, #ff7675, #fab1a0);
+  filter: brightness(1.1);
 }

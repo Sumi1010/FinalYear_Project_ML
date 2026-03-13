@@ -1,6 +1,9 @@
-username,exercise_minutes,water_intake,steps,energy_level,note
-sumithra_m,30,3.0,5000,1,feeling tired
-sumithra_m,0,0.0,0,3,im active
-sumithra_m,30,3.0,5000,3,im happy
-sumithra_m,30,3.0,5000,3,im happy
-sumithra_m,30,2.5,5000,1,im stressed
+username,exercise_minutes,water_intake,steps,energy_level,note,date
+sumithra_m,30,3.0,5000,1,feeling tired,2026-03-13
+sumithra_m,0,0.0,0,3,im active,2026-03-13
+sumithra_m,30,3.0,5000,3,im happy,2026-03-13
+sumithra_m,30,3.0,5000,3,im happy,2026-03-13
+sumithra_m,30,2.5,5000,1,im stressed,2026-03-13
+sumithra_m,30,2.0,5000,4,strong ,2026-03-13
+sumithra_m,30,2.0,5000,3,im tired,2026-03-13
+sumithra_m,30,2.0,5000,3,im strong,2026-03-13

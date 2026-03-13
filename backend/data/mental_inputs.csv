@@ -1,24 +1,26 @@
-username,mood,stress,sleep_quality,screen_time,note
+username,mood,stress,sleep_quality,screen_time,note,date
 ,3,3,3,4.0,"i m frustated
-"
+",2026-03-13
 ,3,3,3,4.0,"i m frustated
-"
+",2026-03-13
 ,3,3,3,4.0,"i m frustated
-"
+",2026-03-13
 ,3,3,3,4.0,"i m frustated
-"
+",2026-03-13
 ,3,3,3,4.0,"i m frustated
-"
+",2026-03-13
 ,3,3,3,4.0,"i m frustated
-"
+",2026-03-13
 ,3,3,3,4.0,"i m frustated
-"
+",2026-03-13
 ,3,3,3,4.0,"i m frustated
-"
+",2026-03-13
 ,3,3,3,4.0,"i m frustated
-"
+",2026-03-13
 ,1,5,1,8.0,"i m frustated
-"
+",2026-03-13
 ,1,5,1,8.0,"i m frustated
-"
-sumithra_m,3,3,3,5.0,im happy
+",2026-03-13
+sumithra_m,3,3,3,5.0,im happy,2026-03-13
+sumithra_m,3,3,3,5.0,im happy,2026-03-13
+sumithra_m,3,3,3,5.0,im happy,2026-03-13

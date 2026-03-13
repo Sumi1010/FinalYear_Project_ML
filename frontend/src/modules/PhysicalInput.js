@@ -103,12 +103,27 @@ export default function PhysicalInput({ user }) {
   const [energyLevel, setEnergyLevel] = useState(3);
   const [note, setNote] = useState("");
 
-  const [gameStage, setGameStage] = useState("form");
+  const [gameStage, setGameStage] = useState("goal");
+  const [selectedGoal, setSelectedGoal] = useState("");
+  const [generatedPlan, setGeneratedPlan] = useState(null);
+
+  const handleGoalSelect = (goal) => {
+    setSelectedGoal(goal);
+    if (goal === "Lose Weight") {
+      setGeneratedPlan(["Walk 20 minutes", "Drink 8 glasses of water", "Do stretching exercises"]);
+    } else if (goal === "Stay Active") {
+      setGeneratedPlan(["Take a 15-minute walk", "Stretch every 2 hours"]);
+    } else if (goal === "Improve Fitness") {
+      setGeneratedPlan(["Do 20 minutes of cardio", "Drink extra water"]);
+    } else if (goal === "Increase Energy") {
+      setGeneratedPlan(["Try a quick yoga flow", "Stay hydrated"]);
+    }
+  };
 
   const submit = async () => {
     try {
       await API.post("/physical", {
-        username: user,
+        username: user || "guest",
         exercise_minutes: parseInt(exerciseMinutes) || 0,
         water_intake: parseFloat(waterIntake) || 0,
         steps: parseInt(steps) || 0,
@@ -132,6 +147,35 @@ export default function PhysicalInput({ user }) {
   return (
     <div className="physical-page">
       <div className="physical-card">
+        {gameStage === "goal" && (
+          <div className="goal-selection-section">
+            <h3 className="physical-title">🎯 Set Your Physical Goal</h3>
+            {!generatedPlan ? (
+              <div className="goal-grid" style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '20px' }}>
+                {["Lose Weight", "Stay Active", "Improve Fitness", "Increase Energy"].map((g) => (
+                  <button key={g} className="physical-btn goal-btn" onClick={() => handleGoalSelect(g)}>
+                    {g}
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className="generated-plan-card" style={{ marginTop: '20px', background: '#f0fdf4', padding: '20px', borderRadius: '15px' }}>
+                <h4 style={{ color: '#166534', marginBottom: '15px' }}>Your '{selectedGoal}' Plan:</h4>
+                <ul style={{ textAlign: "left", marginBottom: "20px", color: '#15803d', lineHeight: '1.6' }}>
+                  {generatedPlan.map((step, i) => <li key={i}>{step}</li>)}
+                </ul>
+                <button className="physical-btn" onClick={() => setGameStage("form")}>
+                  Proceed to Daily Check-in
+                </button>
+              </div>
+            )}
+            <br />
+            <button className="physical-btn" style={{ background: '#ccc', color: '#333' }} onClick={() => navigate("/dashboard")}>
+              Back to Dashboard
+            </button>
+          </div>
+        )}
+
         {gameStage === "form" && (
           <>
             <h3 className="physical-title">🏃 Physical Wellness</h3>

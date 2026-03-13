@@ -34,6 +34,8 @@ MENTAL_FILE = os.path.join(DATA_DIR, "mental_inputs.csv")
 PHYSICAL_FILE = os.path.join(DATA_DIR, "physical_inputs.csv")
 NUTRITION_FILE = os.path.join(DATA_DIR, "nutrition_inputs.csv")
 STREAKS_FILE = os.path.join(DATA_DIR, "streaks.csv")
+HABIT_FILE = os.path.join(DATA_DIR, "habit_inputs.csv")
+SCORES_FILE = os.path.join(DATA_DIR, "scores.csv")
 
 
 def create_file(path, headers):
@@ -49,19 +51,64 @@ create_file(PROFILE_FILE, [
 ])
 create_file(MENTAL_FILE, [
     "username", "mood", "stress",
-    "sleep_quality", "screen_time", "note"
+    "sleep_quality", "screen_time", "note", "date"
 ])
 create_file(PHYSICAL_FILE, [
     "username", "exercise_minutes", "water_intake",
-    "steps", "energy_level", "note"
+    "steps", "energy_level", "note", "date"
 ])
 create_file(NUTRITION_FILE, [
     "username", "meal_type", "water_intake", 
-    "fruit_veg_servings", "junk_food", "energy_level"
+    "fruit_veg_servings", "junk_food", "energy_level", "date"
 ])
 create_file(STREAKS_FILE, [
     "username", "streak", "last_login", "activity_dates"
 ])
+create_file(HABIT_FILE, [
+    "username", "habit_id", "habit_name", "date"
+])
+create_file(SCORES_FILE, [
+    "username", "date", "mental_score", "physical_score",
+    "nutrition_score", "habit_score", "streak_score"
+])
+
+def update_daily_score(username: str, module: str, points: int = 20):
+    today = str(datetime.now().date())
+    scores = []
+    updated = False
+    
+    if os.path.exists(SCORES_FILE):
+        with open(SCORES_FILE, "r") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                scores.append(row)
+                
+    for row in scores:
+        if row["username"] == username and row["date"] == today:
+            row[module] = str(points)
+            updated = True
+            break
+            
+    if not updated:
+        new_row = {
+            "username": username,
+            "date": today,
+            "mental_score": "0",
+            "physical_score": "0",
+            "nutrition_score": "0",
+            "habit_score": "0",
+            "streak_score": "0"
+        }
+        new_row[module] = str(points)
+        scores.append(new_row)
+        
+    with open(SCORES_FILE, "w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=[
+            "username", "date", "mental_score", "physical_score", 
+            "nutrition_score", "habit_score", "streak_score"
+        ])
+        writer.writeheader()
+        writer.writerows(scores)
 
 # ================= MODELS =================
 class User(BaseModel):
@@ -100,6 +147,11 @@ class NutritionInputModel(BaseModel):
     fruit_veg_servings: int
     junk_food: str
     energy_level: str
+
+class HabitInput(BaseModel):
+    username: str
+    habit_id: str
+    habit_name: str
 
 
 # ================= ROOT =================
@@ -169,8 +221,10 @@ def save_mental(data: MentalInput):
             data.stress,
             data.sleep_quality,
             data.screen_time,
-            data.note
+            data.note,
+            str(datetime.now().date())
         ])
+    update_daily_score(data.username, "mental_score", 20)
     return {"message": "Mental input saved"}
 
 # ================= SAVE PHYSICAL INPUT =================
@@ -183,8 +237,10 @@ def save_physical(data: PhysicalInputModel):
             data.water_intake,
             data.steps,
             data.energy_level,
-            data.note
+            data.note,
+            str(datetime.now().date())
         ])
+    update_daily_score(data.username, "physical_score", 20)
     return {"message": "Physical input saved"}
 
 # ================= SAVE NUTRITION INPUT =================
@@ -197,9 +253,24 @@ def save_nutrition(data: NutritionInputModel):
             data.water_intake,
             data.fruit_veg_servings,
             data.junk_food,
-            data.energy_level
+            data.energy_level,
+            str(datetime.now().date())
         ])
+    update_daily_score(data.username, "nutrition_score", 20)
     return {"message": "Nutrition input saved"}
+
+# ================= SAVE HABIT INPUT =================
+@app.post("/habit")
+def save_habit(data: HabitInput):
+    with open(HABIT_FILE, "a", newline="") as f:
+        csv.writer(f).writerow([
+            data.username,
+            data.habit_id,
+            data.habit_name,
+            str(datetime.now().date())
+        ])
+    update_daily_score(data.username, "habit_score", 20)
+    return {"message": "Habit saved"}
 
 # ================= STREAK SYSTEM =================
 def get_streak_badge(streak: int) -> str:
@@ -266,6 +337,119 @@ def get_streak(username: str):
         "streak": streak_count,
         "badge": badge,
         "activity_dates": activity_dates
+    }
+
+
+# ================= WELLNESS SCORE =================
+@app.get("/wellness-score/{username}")
+def get_wellness_score(username: str):
+    today = str(datetime.now().date())
+    streak_score = 0
+    
+    if os.path.exists(STREAKS_FILE):
+        with open(STREAKS_FILE, "r", encoding="utf-8") as f:
+            for row in csv.DictReader(f):
+                if row.get("username") == username and int(row.get("streak", 0)) > 0:
+                    streak_score = 20
+                    break
+                    
+    update_daily_score(username, "streak_score", streak_score)
+
+    ms, ps, ns, hs = 0, 0, 0, 0
+    if os.path.exists(SCORES_FILE):
+        with open(SCORES_FILE, "r") as f:
+            for row in csv.DictReader(f):
+                if row.get("username") == username and row.get("date") == today:
+                    ms = int(row.get("mental_score", 0))
+                    ps = int(row.get("physical_score", 0))
+                    ns = int(row.get("nutrition_score", 0))
+                    hs = int(row.get("habit_score", 0))
+                    break
+                    
+    total = ms + ps + ns + hs + streak_score
+    return {
+        "mental_score": ms, "physical_score": ps, "nutrition_score": ns,
+        "habit_score": hs, "streak_score": streak_score, "total": total
+    }
+
+# ================= DAILY MOTIVATION =================
+@app.get("/daily-motivation/{username}")
+def get_daily_motivation(username: str):
+    yesterday = str(datetime.now().date() - timedelta(days=1))
+    mood = None
+    note = ""
+    
+    if os.path.exists(MENTAL_FILE):
+        with open(MENTAL_FILE, "r") as f:
+            for row in csv.DictReader(f):
+                if row.get("username") == username and row.get("date") == yesterday:
+                    mood = int(row.get("mood", 3))
+                    note = row.get("note", "")
+                    
+    if mood is None:
+        return {"message": "A new day is a fresh start! Keep up the great work and prioritize your wellness today! 🌟"}
+        
+    if "tired" in note.lower() or mood <= 2:
+        return {"message": "You mentioned feeling a bit tired yesterday. Take short breaks today and stay hydrated. You are improving step by step! 💙"}
+    elif mood >= 4:
+        return {"message": "Great progress! Your mood improved yesterday. Keep maintaining your amazing routine! ✨"}
+    else:
+        return {"message": "Consistency is key! Every small step you take is building a healthier you. Keep it up! 🚀"}
+
+# ================= WEEKLY REPORT =================
+@app.get("/weekly-report/{username}")
+def get_weekly_report(username: str):
+    today = datetime.now().date()
+    last_7_days = [str(today - timedelta(days=i)) for i in range(6, -1, -1)]
+    
+    def get_user_data(file_path):
+        data = []
+        if os.path.exists(file_path):
+            with open(file_path, "r") as f:
+                for row in csv.DictReader(f):
+                    if row.get("username") == username and row.get("date") in last_7_days:
+                        data.append(row)
+        return data
+
+    mental_data = get_user_data(MENTAL_FILE)
+    physical_data = get_user_data(PHYSICAL_FILE)
+    nutrition_data = get_user_data(NUTRITION_FILE)
+    habit_data = get_user_data(HABIT_FILE)
+    
+    tired_days = sum(1 for m in mental_data if int(m.get("mood", 3)) <= 2 or "tired" in m.get("note", "").lower())
+    user_summary = f"This week you reported feeling tired or down on {tired_days} days." if tired_days > 0 else "This week you had consistently positive or neutral energy!"
+    
+    avg_sleep = sum(int(m.get("sleep_quality", 3)) for m in mental_data) / max(len(mental_data), 1)
+    suggestion = "Try sleeping earlier and reduce screen time." if avg_sleep < 3 else "You're getting good sleep. Keep up your healthy routines!"
+    
+    motivation = "Small improvements lead to big lifestyle changes."
+    
+    graph_data = []
+    for d in last_7_days:
+        dm = next((m for m in mental_data if m["date"] == d), None)
+        dp = next((p for p in physical_data if p["date"] == d), None)
+        dn = next((n for n in nutrition_data if n["date"] == d), None)
+        dh = next((h for h in habit_data if h["date"] == d), None)
+        
+        n_score = 0
+        if dn:
+            n_score = 10 if dn.get("junk_food", "No") == "No" else 5
+            n_score += int(dn.get("fruit_veg_servings", 0)) * 2
+            n_score += min(5, int(dn.get("water_intake", 0)))
+            
+        graph_data.append({
+            "date": d,
+            "mood": int(dm["mood"]) * 20 if dm else 0,
+            "activity_minutes": int(dp["exercise_minutes"]) if dp else 0,
+            "nutrition_score": n_score * 5,
+            "habits_completed": 1 if dh else 0
+        })
+
+    return {
+        "user_summary": user_summary,
+        "suggestion": suggestion,
+        "motivation": motivation,
+        "graph_data": graph_data
     }
 
 
