@@ -99,6 +99,26 @@
 
 .report-footer {
   text-align: center;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.download-btn {
+  background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+  color: #333;
+  font-weight: 600;
+  font-size: 16px;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(168, 237, 234, 0.4);
+  transition: transform 0.2s;
+}
+
+.download-btn:hover {
+  transform: translateY(-2px);
 }
 
 .back-btn {

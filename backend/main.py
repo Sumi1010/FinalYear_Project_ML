@@ -33,6 +33,7 @@ PROFILE_FILE = os.path.join(DATA_DIR, "profiles.csv")
 MENTAL_FILE = os.path.join(DATA_DIR, "mental_inputs.csv")
 PHYSICAL_FILE = os.path.join(DATA_DIR, "physical_inputs.csv")
 NUTRITION_FILE = os.path.join(DATA_DIR, "nutrition_inputs.csv")
+NUTRITION_CALORIE_FILE = os.path.join(DATA_DIR, "nutrition_calorie_inputs.csv")
 STREAKS_FILE = os.path.join(DATA_DIR, "streaks.csv")
 HABIT_FILE = os.path.join(DATA_DIR, "habit_inputs.csv")
 SCORES_FILE = os.path.join(DATA_DIR, "scores.csv")
@@ -61,11 +62,16 @@ create_file(NUTRITION_FILE, [
     "username", "meal_type", "water_intake", 
     "fruit_veg_servings", "junk_food", "energy_level", "date"
 ])
+create_file(NUTRITION_CALORIE_FILE, [
+    "username", "height", "weight", "age", "gender", "bmi",
+    "daily_calories", "target_calories", "meal_type", "foods",
+    "quantity", "total_calories", "status", "date"
+])
 create_file(STREAKS_FILE, [
     "username", "streak", "last_login", "activity_dates"
 ])
 create_file(HABIT_FILE, [
-    "username", "habit_id", "habit_name", "date"
+    "username", "habit_type", "content", "extra_field", "date"
 ])
 create_file(SCORES_FILE, [
     "username", "date", "mental_score", "physical_score",
@@ -148,10 +154,40 @@ class NutritionInputModel(BaseModel):
     junk_food: str
     energy_level: str
 
+class NutritionCalorieInput(BaseModel):
+    username: str
+    height: float
+    weight: float
+    age: int
+    gender: str
+    bmi: float
+    daily_calories: int
+    target_calories: int
+    meal_type: str
+    foods: str
+    quantity: str
+    total_calories: int
+    status: str
+
 class HabitInput(BaseModel):
     username: str
     habit_id: str
     habit_name: str
+
+class JournalInput(BaseModel):
+    username: str
+    content: str
+    
+class ReadingInput(BaseModel):
+    username: str
+    book_name: str
+    summary: str
+
+class LearningInput(BaseModel):
+    username: str
+    skill: str
+    study_time: str
+    answers: str
 
 
 # ================= ROOT =================
@@ -259,18 +295,81 @@ def save_nutrition(data: NutritionInputModel):
     update_daily_score(data.username, "nutrition_score", 20)
     return {"message": "Nutrition input saved"}
 
+# ================= SAVE NUTRITION CALORIE INPUT =================
+@app.post("/nutrition-calorie")
+def save_nutrition_calorie(data: NutritionCalorieInput):
+    with open(NUTRITION_CALORIE_FILE, "a", newline="", encoding="utf-8") as f:
+        csv.writer(f).writerow([
+            data.username,
+            data.height,
+            data.weight,
+            data.age,
+            data.gender,
+            data.bmi,
+            data.daily_calories,
+            data.target_calories,
+            data.meal_type,
+            data.foods,
+            data.quantity,
+            data.total_calories,
+            data.status,
+            str(datetime.now().date())
+        ])
+    update_daily_score(data.username, "nutrition_score", 20)
+    return {"message": "Nutrition calorie input saved"}
+
 # ================= SAVE HABIT INPUT =================
 @app.post("/habit")
 def save_habit(data: HabitInput):
-    with open(HABIT_FILE, "a", newline="") as f:
+    with open(HABIT_FILE, "a", newline="", encoding="utf-8") as f:
         csv.writer(f).writerow([
             data.username,
-            data.habit_id,
+            "Legacy Habit",
             data.habit_name,
+            data.habit_id,
             str(datetime.now().date())
         ])
     update_daily_score(data.username, "habit_score", 20)
     return {"message": "Habit saved"}
+
+@app.post("/habit/journal")
+def save_habit_journal(data: JournalInput):
+    with open(HABIT_FILE, "a", newline="", encoding="utf-8") as f:
+        csv.writer(f).writerow([
+            data.username,
+            "Journaling",
+            data.content,
+            "",
+            str(datetime.now().date())
+        ])
+    update_daily_score(data.username, "habit_score", 20)
+    return {"message": "Journal saved"}
+
+@app.post("/habit/reading")
+def save_habit_reading(data: ReadingInput):
+    with open(HABIT_FILE, "a", newline="", encoding="utf-8") as f:
+        csv.writer(f).writerow([
+            data.username,
+            "Reading",
+            data.summary,
+            data.book_name,
+            str(datetime.now().date())
+        ])
+    update_daily_score(data.username, "habit_score", 20)
+    return {"message": "Reading saved"}
+
+@app.post("/habit/learning")
+def save_habit_learning(data: LearningInput):
+    with open(HABIT_FILE, "a", newline="", encoding="utf-8") as f:
+        csv.writer(f).writerow([
+            data.username,
+            "Learning",
+            data.answers,
+            f"{data.skill} - {data.study_time}",
+            str(datetime.now().date())
+        ])
+    update_daily_score(data.username, "habit_score", 20)
+    return {"message": "Learning saved"}
 
 # ================= STREAK SYSTEM =================
 def get_streak_badge(streak: int) -> str:

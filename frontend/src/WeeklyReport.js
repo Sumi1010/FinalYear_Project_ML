@@ -4,6 +4,8 @@ import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, 
   Tooltip, ResponsiveContainer 
 } from "recharts";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 import API from "./api";
 import "./WeeklyReport.css";
 
@@ -32,12 +34,32 @@ export default function WeeklyReport({ user }) {
     return <div className="report-loading">Loading your detailed weekly report...</div>;
   }
 
+  const downloadReport = async () => {
+    const reportElement = document.getElementById("report-section");
+    if (!reportElement) return;
+
+    try {
+      const canvas = await html2canvas(reportElement, { scale: 2 });
+      const imgData = canvas.toDataURL("image/png");
+      
+      const pdf = new jsPDF("p", "mm", "a4");
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.save("Weekly_Report.pdf");
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+    }
+  };
+
   return (
     <div className="weekly-container">
-      <div className="weekly-header">
-        <h1>Weekly Wellness Report 📈</h1>
-        <p>Insights into your mind and body from the last 7 days.</p>
-      </div>
+      <div id="report-section">
+        <div className="weekly-header">
+          <h1>Weekly Wellness Report 📈</h1>
+          <p>Insights into your mind and body from the last 7 days.</p>
+        </div>
 
       <div className="report-sections">
         {/* SECTION 1 — USER SUMMARY */}
@@ -117,9 +139,14 @@ export default function WeeklyReport({ user }) {
           </ResponsiveContainer>
         </div>
 
+        </div>
+
       </div>
 
       <div className="report-footer">
+        <button className="download-btn" onClick={downloadReport}>
+          Download Report
+        </button>
         <button className="back-btn" onClick={() => navigate("/dashboard")}>
           Return to Dashboard
         </button>
