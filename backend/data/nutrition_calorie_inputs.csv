@@ -1,3 +1,6 @@
 username,height,weight,age,gender,bmi,daily_calories,target_calories,meal_type,foods,quantity,total_calories,status,date
 sumithra_m,165.0,50.0,21,Female,18.4,1265,1565,Lunch/Dinner,"Rice, Sambar","1, 1",280,Low,2026-03-17
 sumithra_m,165.0,50.0,21,Female,18.4,1265,1265,Lunch/Dinner,"Rice, Sambar, Curd","1, 1, 1",380,Low,2026-03-20
+sumithra_m,165.0,50.0,21,Female,18.4,1265,1265,Breakfast,Dosa,1,120,Low,2026-03-20
+sumithra_m,165.0,50.0,21,Female,18.4,1265,1265,All Meals,"Upma (Breakfast), Rice (Lunch), Dal (Lunch), Curd (Lunch), Chapati (Dinner), Egg (Dinner)","1, 1, 1, 1, 1, 1",700,Low,2026-03-20
+sumithra_m,160.0,50.0,21,Female,19.5,1234,1234,All Meals,"Pongal (Breakfast), Milk (Breakfast), Rice (Lunch), Dal (Lunch), Curd (Lunch), Chapati (Dinner), Milk (Dinner), Dal (Dinner)","1, 1, 1, 1, 1, 1, 1, 1",1070,Balanced,2026-03-20
