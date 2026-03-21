@@ -35,6 +35,16 @@ const FOOD_DATABASE = {
     { name: "Egg", calories: 70, type: "Healthy Foods" },
     { name: "Milk", calories: 120, type: "Healthy Foods" },
     { name: "None", calories: 0, type: "None" }
+  ],
+  Snacks: [
+    { name: "Biscuits", calories: 40, type: "Moderate Foods" },
+    { name: "Tea", calories: 30, type: "Moderate Foods" },
+    { name: "Coffee", calories: 50, type: "Moderate Foods" },
+    { name: "Fruits", calories: 60, type: "Healthy Foods" },
+    { name: "Juice", calories: 80, type: "Healthy Foods" },
+    { name: "Nuts", calories: 150, type: "Healthy Foods" },
+    { name: "Chips", calories: 160, type: "Moderate Foods" },
+    { name: "None", calories: 0, type: "None" }
   ]
 };
 
@@ -107,14 +117,28 @@ export default function NutritionInput({ user }) {
     setCalcData({ ...calcData, targetCalories: target });
   };
 
-  const handleFoodToggle = (foodItem, mealType) => {
+  const handleAddFood = (foodItem, mealType) => {
     const existingIndex = selectedFoods.findIndex(f => f.name === foodItem.name && f.mealType === mealType);
     if (existingIndex >= 0) {
       const newFoods = [...selectedFoods];
-      newFoods.splice(existingIndex, 1);
+      newFoods[existingIndex].quantity += 1;
       setSelectedFoods(newFoods);
     } else {
       setSelectedFoods([...selectedFoods, { ...foodItem, mealType, quantity: 1 }]);
+    }
+  };
+
+  const handleUpdateQuantity = (foodItem, mealType, change) => {
+    const existingIndex = selectedFoods.findIndex(f => f.name === foodItem.name && f.mealType === mealType);
+    if (existingIndex >= 0) {
+      const newFoods = [...selectedFoods];
+      const newQty = newFoods[existingIndex].quantity + change;
+      if (newQty <= 0) {
+          newFoods.splice(existingIndex, 1);
+      } else {
+          newFoods[existingIndex].quantity = newQty;
+      }
+      setSelectedFoods(newFoods);
     }
   };
 
@@ -177,7 +201,8 @@ export default function NutritionInput({ user }) {
     const handleBack = () => {
        if (mealType === "Breakfast") setStage("goal");
        else if (mealType === "Lunch") setStage("breakfast");
-       else setStage("lunch");
+       else if (mealType === "Dinner") setStage("lunch");
+       else if (mealType === "Snacks") setStage("dinner");
     };
 
     return (
@@ -187,16 +212,15 @@ export default function NutritionInput({ user }) {
         
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center', marginBottom: '30px' }}>
           {foods.map(food => {
-              const isSelected = selectedFoods.find(f => f.name === food.name && f.mealType === mealType);
+              const selectedItem = selectedFoods.find(f => f.name === food.name && f.mealType === mealType);
+              const isSelected = !!selectedItem;
               return (
                 <div 
                   key={food.name} 
-                  onClick={() => handleFoodToggle(food, mealType)}
                   style={{
                     padding: '10px 18px', 
                     borderRadius: '25px', 
                     border: isSelected ? '2px solid #004d40' : '1px solid #ccc',
-                    cursor: 'pointer',
                     background: isSelected ? '#00796b' : '#fff',
                     color: isSelected ? '#fff' : '#333',
                     fontWeight: isSelected ? '600' : '400',
@@ -207,7 +231,19 @@ export default function NutritionInput({ user }) {
                     boxShadow: isSelected ? "0 4px 12px rgba(0, 121, 107, 0.3)" : "0 2px 5px rgba(0,0,0,0.05)"
                   }}
                 >
-                  {food.name} <span style={{ fontSize: '0.85em', opacity: 0.85 }}>({food.calories} kcal)</span>
+                  <span style={{flex: 1}}>{food.name} <span style={{ fontSize: '0.85em', opacity: 0.85 }}>({food.calories} kcal)</span></span>
+                  {!isSelected ? (
+                    <button 
+                       onClick={(e) => { e.stopPropagation(); handleAddFood(food, mealType); }}
+                       style={{ background: 'transparent', border: '1px solid currentColor', color: 'inherit', borderRadius: '50%', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', marginLeft: '5px' }}
+                    >➕</button>
+                  ) : (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#004d40', borderRadius: '15px', padding: '2px 8px', marginLeft: '5px' }}>
+                        <button onClick={(e) => { e.stopPropagation(); handleUpdateQuantity(food, mealType, -1); }} style={{ background: 'transparent', border: 'none', color: '#fff', cursor: 'pointer', fontSize: '1.2em', width: '20px', display: 'flex', justifyContent: 'center' }}>-</button>
+                        <span style={{ minWidth: '15px', textAlign: 'center' }}>{selectedItem.quantity}</span>
+                        <button onClick={(e) => { e.stopPropagation(); handleUpdateQuantity(food, mealType, 1); }} style={{ background: 'transparent', border: 'none', color: '#fff', cursor: 'pointer', fontSize: '1.2em', width: '20px', display: 'flex', justifyContent: 'center' }}>+</button>
+                    </div>
+                  )}
                 </div>
               );
           })}
@@ -303,9 +339,10 @@ export default function NutritionInput({ user }) {
           </div>
         )}
 
-        {stage === "breakfast" && <div style={{ padding: "20px" }}>{renderFoodStage("Breakfast", "Step 1 of 3", "lunch", "Next →")}</div>}
-        {stage === "lunch" && <div style={{ padding: "20px" }}>{renderFoodStage("Lunch", "Step 2 of 3", "dinner", "Next →")}</div>}
-        {stage === "dinner" && <div style={{ padding: "20px" }}>{renderFoodStage("Dinner", "Step 3 of 3", "submit", "Next →")}</div>}
+        {stage === "breakfast" && <div style={{ padding: "20px" }}>{renderFoodStage("Breakfast", "Step 1 of 4", "lunch", "Next →")}</div>}
+        {stage === "lunch" && <div style={{ padding: "20px" }}>{renderFoodStage("Lunch", "Step 2 of 4", "dinner", "Next →")}</div>}
+        {stage === "dinner" && <div style={{ padding: "20px" }}>{renderFoodStage("Dinner", "Step 3 of 4", "snacks", "Next →")}</div>}
+        {stage === "snacks" && <div style={{ padding: "20px" }}>{renderFoodStage("Snacks", "Step 4 of 4", "submit", "Review & Submit")}</div>}
 
         {stage === "submit" && (
           <div style={{ padding: "20px", textAlign: "center" }}>
@@ -314,8 +351,8 @@ export default function NutritionInput({ user }) {
               <h4 style={{ margin: "0 0 10px 0", color: "#33691e" }}>Selected Foods:</h4>
               {selectedFoods.map((f, i) => (
                   <div key={i} style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
-                      <span>{f.name} <small style={{ opacity: 0.7 }}>({f.mealType})</small></span>
-                      <span>{f.calories} kcal</span>
+                      <span>{f.name} x{f.quantity} <small style={{ opacity: 0.7 }}>({f.mealType})</small></span>
+                      <span>{f.calories * f.quantity} kcal</span>
                   </div>
               ))}
               {selectedFoods.length === 0 && <p style={{ color: "#666" }}>No foods selected.</p>}
@@ -336,7 +373,7 @@ export default function NutritionInput({ user }) {
             )}
 
             <div style={{ display: "flex", gap: "10px" }}>
-                <button className="nutrition-btn" onClick={() => setStage("dinner")} style={{ flex: 1, background: "#e0e0e0", color: "#333", border: "1px solid #ccc" }}>Back</button>
+                <button className="nutrition-btn" onClick={() => setStage("snacks")} style={{ flex: 1, background: "#e0e0e0", color: "#333", border: "1px solid #ccc" }}>Back</button>
                 <button className="nutrition-btn" onClick={submit} style={{ flex: 2, background: '#4facfe', boxShadow: "0 4px 15px rgba(0,0,0,0.1)" }}>Submit & View Report</button>
             </div>
           </div>
