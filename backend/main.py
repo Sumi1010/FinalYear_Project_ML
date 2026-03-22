@@ -18,7 +18,12 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # frontend port
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://192.168.1.9:3000",
+        "http://localhost:3001"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -513,6 +518,7 @@ def get_weekly_report(username: str):
     mental_data = get_user_data(MENTAL_FILE)
     physical_data = get_user_data(PHYSICAL_FILE)
     nutrition_data = get_user_data(NUTRITION_FILE)
+    nutrition_calorie_data = get_user_data(NUTRITION_CALORIE_FILE)
     habit_data = get_user_data(HABIT_FILE)
     
     tired_days = sum(1 for m in mental_data if int(m.get("mood", 3)) <= 2 or "tired" in m.get("note", "").lower())
@@ -525,13 +531,20 @@ def get_weekly_report(username: str):
     
     graph_data = []
     for d in last_7_days:
-        dm = next((m for m in mental_data if m["date"] == d), None)
-        dp = next((p for p in physical_data if p["date"] == d), None)
-        dn = next((n for n in nutrition_data if n["date"] == d), None)
-        dh = next((h for h in habit_data if h["date"] == d), None)
+        dm = next((m for m in reversed(mental_data) if m["date"] == d), None)
+        dp = next((p for p in reversed(physical_data) if p["date"] == d), None)
+        dn = next((n for n in reversed(nutrition_data) if n["date"] == d), None)
+        dnc = next((nc for nc in reversed(nutrition_calorie_data) if nc["date"] == d), None)
+        dh_count = sum(1 for h in habit_data if h["date"] == d)
         
         n_score = 0
-        if dn:
+        if dnc:
+            status = dnc.get("status", "Low")
+            if status == "Balanced":
+                n_score = 20
+            else:
+                n_score = 10
+        elif dn:
             n_score = 10 if dn.get("junk_food", "No") == "No" else 5
             n_score += int(dn.get("fruit_veg_servings", 0)) * 2
             n_score += min(5, int(dn.get("water_intake", 0)))
@@ -541,14 +554,18 @@ def get_weekly_report(username: str):
             "mood": int(dm["mood"]) * 20 if dm else 0,
             "activity_minutes": int(dp["exercise_minutes"]) if dp else 0,
             "nutrition_score": n_score * 5,
-            "habits_completed": 1 if dh else 0
+            "habits_completed": dh_count
         })
 
     return {
         "user_summary": user_summary,
         "suggestion": suggestion,
         "motivation": motivation,
-        "graph_data": graph_data
+        "graph_data": graph_data,
+        "mental_data": mental_data,
+        "physical_data": physical_data,
+        "nutrition_data": nutrition_data,
+        "habit_data": habit_data
     }
 
 
