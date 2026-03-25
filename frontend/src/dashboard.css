@@ -316,3 +316,33 @@
 .module-btn:hover {
   filter: brightness(1.1);
 }
+
+/* Responsive Dashboard Layouts */
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 20px;
+  }
+  .dashboard-top {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+  }
+  .user-profile {
+    flex-direction: column;
+  }
+  .modules-wrapper {
+    grid-template-columns: 1fr;
+  }
+  .metrics-section {
+    flex-direction: column;
+  }
+  .metric-card {
+    min-width: 100%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .modules-wrapper {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

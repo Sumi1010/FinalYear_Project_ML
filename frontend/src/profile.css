@@ -57,3 +57,22 @@
   font-size: 16px;
   cursor: pointer;
 }
+
+/* Responsive Profile */
+@media (max-width: 768px) {
+  .profile-card {
+    width: 90%;
+  }
+  .profile-card button {
+    width: 100%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .profile-card {
+    width: 50%;
+  }
+  .profile-card button {
+    width: auto;
+  }
+}

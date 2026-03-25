@@ -16,8 +16,15 @@ import Journaling from "./modules/Journaling";
 import Reading from "./modules/Reading";
 import Learning from "./modules/Learning";
 
+import SplashScreen from "./components/SplashScreen";
+
 function App() {
   const [user, setUser] = useState("");
+  const [showSplash, setShowSplash] = useState(true);
+
+  if (showSplash) {
+    return <SplashScreen onComplete={() => setShowSplash(false)} />;
+  }
 
   return (
     <Routes>

@@ -63,3 +63,22 @@
   color: red;
   font-size: 13px;
 }
+
+/* Responsive Auth */
+@media (max-width: 768px) {
+  .auth-card {
+    width: 90%;
+  }
+  .auth-card button {
+    width: 100%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .auth-card {
+    width: 50%;
+  }
+  .auth-card button {
+    width: auto;
+  }
+}

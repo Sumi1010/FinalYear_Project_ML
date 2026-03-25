@@ -227,3 +227,26 @@
   display: block;
   margin-bottom: 5px;
 }
+
+/* Responsive Forms & Buttons */
+@media (max-width: 768px) {
+  .module-card, .physical-card, .nutrition-card {
+    width: 90%;
+    max-width: none;
+  }
+  
+  .physical-btn, .nutrition-btn, .module-card button {
+    width: 100%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .module-card, .physical-card, .nutrition-card {
+    width: 50%;
+    max-width: none;
+  }
+  
+  .physical-btn, .nutrition-btn, .module-card button {
+    width: auto;
+  }
+}
