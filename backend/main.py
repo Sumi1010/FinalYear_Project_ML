@@ -26,7 +26,7 @@ app.add_middleware(
         "https://frontendprojectfinalyr.netlify.app"  # ✅ No trailing slash
     ],
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
