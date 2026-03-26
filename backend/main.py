@@ -26,7 +26,7 @@ app.add_middleware(
         "https://frontendprojectfinalyr.netlify.app"  # ✅ No trailing slash
     ],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"]
     allow_headers=["*"],
 )
 
@@ -236,6 +236,15 @@ class Profile(BaseModel):
     interests: List[str] = []
 
 @app.post("/profile/{username}")
+def get_profile(username: str):
+
+    with open(PROFILE_FILE, "r") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            if row["username"] == username:
+                return row
+
+    raise HTTPException(status_code=404, detail="Profile not found")
 def save_profile(username: str, profile: Profile):
 
     if not username:
