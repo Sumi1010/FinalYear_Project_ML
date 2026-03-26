@@ -22,7 +22,8 @@ app.add_middleware(
         "http://localhost:3000",
         "http://127.0.0.1:3000",
         "http://192.168.1.9:3000",
-        "http://localhost:3001"
+        "http://localhost:3001",
+        "https://your-app-name.netlify.app"  # 👈 add your Netlify URL here
     ],
     allow_credentials=True,
     allow_methods=["*"],
