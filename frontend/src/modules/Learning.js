@@ -165,6 +165,9 @@ export default function Learning({ user }) {
                     </div>
                 )}
 
+                <button className="dashboard-back-btn" onClick={() => navigate("/dashboard")} style={{marginTop: '25px', width: '100%'}}>
+                    Return to Dashboard
+                </button>
                 <p className="habit-tip">Tip: Consistency builds strong habits 💪</p>
             </div>
         </div>

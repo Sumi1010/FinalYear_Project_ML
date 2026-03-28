@@ -43,6 +43,9 @@ export default function Journaling({ user }) {
                 <button className="habit-submit-btn" onClick={handleSave} disabled={loading || !content.trim()}>
                     {loading ? "Saving..." : "Save Journal"}
                 </button>
+                <button className="dashboard-back-btn" onClick={() => navigate("/dashboard")} style={{marginTop: '15px', width: '100%'}}>
+                    Return to Dashboard
+                </button>
                 <p className="habit-tip">Tip: Consistency builds strong habits 💪</p>
             </div>
         </div>

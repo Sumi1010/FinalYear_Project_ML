@@ -63,6 +63,9 @@ export default function Reading({ user }) {
                 >
                     {loading ? "Submitting..." : "Submit"}
                 </button>
+                <button className="dashboard-back-btn" onClick={() => navigate("/dashboard")} style={{marginTop: '15px', width: '100%'}}>
+                    Return to Dashboard
+                </button>
                 <p className="habit-tip">Tip: Consistency builds strong habits 💪</p>
             </div>
         </div>
