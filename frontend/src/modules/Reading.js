@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./habitTracking.css";
+import API from "../api";
 
 export default function Reading({ user }) {
     const navigate = useNavigate();
@@ -12,22 +13,15 @@ export default function Reading({ user }) {
         if (!bookName.trim() || !summary.trim()) return;
         setLoading(true);
         try {
-            const resp = await fetch("http://localhost:8000/habit/reading", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    username: user || "guest",
-                    book_name: bookName,
-                    summary: summary
-                })
+            await API.post("/habit/reading", {
+                username: user || "guest",
+                book_name: bookName,
+                summary: summary
             });
-            if (resp.ok) {
-                navigate("/dashboard");
-            } else {
-                alert("Failed to save reading activity");
-            }
+            navigate("/dashboard");
         } catch (err) {
             console.error(err);
+            alert("Failed to save reading activity");
         } finally {
             setLoading(false);
         }

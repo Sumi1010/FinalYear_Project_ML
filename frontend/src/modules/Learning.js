@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./habitTracking.css";
+import API from "../api";
 
 const SKILLS = ["Java", "Python", "React", "UI/UX", "C++"];
 const QUIZZES = {
@@ -66,23 +67,16 @@ export default function Learning({ user }) {
         if (!answers[0].trim() || !answers[1].trim()) return;
         setLoading(true);
         try {
-            const resp = await fetch("http://localhost:8000/habit/learning", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    username: user || "guest",
-                    skill: selectedSkill,
-                    study_time: studyTime,
-                    answers: `Q1: ${answers[0]} | Q2: ${answers[1]}`
-                })
+            await API.post("/habit/learning", {
+                username: user || "guest",
+                skill: selectedSkill,
+                study_time: studyTime,
+                answers: `Q1: ${answers[0]} | Q2: ${answers[1]}`
             });
-            if (resp.ok) {
-                navigate("/dashboard");
-            } else {
-                alert("Failed to save learning activity");
-            }
+            navigate("/dashboard");
         } catch (err) {
             console.error(err);
+            alert("Failed to save learning activity");
         } finally {
             setLoading(false);
         }

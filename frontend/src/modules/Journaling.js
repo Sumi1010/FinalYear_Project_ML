@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./habitTracking.css";
+import API from "../api";
 
 export default function Journaling({ user }) {
     const navigate = useNavigate();
@@ -11,21 +12,14 @@ export default function Journaling({ user }) {
         if (!content.trim()) return;
         setLoading(true);
         try {
-            const resp = await fetch("http://localhost:8000/habit/journal", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    username: user || "guest",
-                    content: content
-                })
+            await API.post("/habit/journal", {
+                username: user || "guest",
+                content: content
             });
-            if (resp.ok) {
-                navigate("/dashboard");
-            } else {
-                alert("Failed to save journal");
-            }
+            navigate("/dashboard");
         } catch (err) {
             console.error(err);
+            alert("Failed to save journal");
         } finally {
             setLoading(false);
         }
