@@ -60,8 +60,14 @@
 
 /* Responsive Profile */
 @media (max-width: 768px) {
+  .profile-container {
+    padding: 15px;
+  }
   .profile-card {
-    width: 90%;
+    width: 100%;
+    margin: 0;
+    padding: 25px;
+    box-sizing: border-box;
   }
   .profile-card button {
     width: 100%;

@@ -172,7 +172,7 @@ export default function WeeklyReport({ user }) {
         
         <div className="chart-wrapper">
           <h3>Mood Trend (Score)</h3>
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="99%" height={300}>
             <LineChart data={report.graph_data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
               <XAxis dataKey="date" tick={{fontSize: 12}} />
@@ -185,7 +185,7 @@ export default function WeeklyReport({ user }) {
 
         <div className="chart-wrapper">
           <h3>Physical Activity (Minutes)</h3>
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="99%" height={300}>
             <BarChart data={report.graph_data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
               <CartesianGrid stroke="#eee" strokeDasharray="3 3" />
               <XAxis dataKey="date" tick={{fontSize: 12}} />
@@ -198,7 +198,7 @@ export default function WeeklyReport({ user }) {
 
         <div className="chart-wrapper">
           <h3>Nutrition Score</h3>
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="99%" height={300}>
             <LineChart data={report.graph_data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
               <XAxis dataKey="date" tick={{fontSize: 12}} />
@@ -211,7 +211,7 @@ export default function WeeklyReport({ user }) {
 
         <div className="chart-wrapper">
           <h3>Habits Completed</h3>
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="99%" height={300}>
             <BarChart data={report.graph_data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#eee" />
               <XAxis dataKey="date" tick={{fontSize: 12}} />

@@ -42,3 +42,9 @@
   background: white;
   box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }
+
+@media (max-width: 768px) {
+  .canvas {
+    max-width: 90vw;
+  }
+}

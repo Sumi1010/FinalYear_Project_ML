@@ -99,15 +99,15 @@ export default function PersonalTracker() {
         </div>
 
         {/* Pie Chart */}
-        <div style={{ background: "#fafafa", borderRadius: "15px", padding: "20px", marginBottom: "30px", border: "1px solid #eee" }}>
+        <div style={{ background: "#fafafa", borderRadius: "15px", padding: "20px", marginBottom: "30px", border: "1px solid #eee", width: "100%", boxSizing: "border-box" }}>
             <h4 style={{ textAlign: "center", color: "#424242", marginBottom: "10px" }}>Food Distribution</h4>
-            <div style={{ height: "300px" }}>
-              <ResponsiveContainer width="100%" height="100%">
+            <div style={{ height: "300px", width: "100%", minWidth: 0 }}>
+              <ResponsiveContainer width="99%" height="100%">
                 <PieChart>
                   <Pie
                     data={data}
-                    innerRadius={70}
-                    outerRadius={110}
+                    innerRadius="50%"
+                    outerRadius="80%"
                     paddingAngle={5}
                     dataKey="value"
                   >

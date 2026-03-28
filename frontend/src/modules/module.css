@@ -231,12 +231,23 @@
 /* Responsive Forms & Buttons */
 @media (max-width: 768px) {
   .module-card, .physical-card, .nutrition-card {
-    width: 90%;
+    width: 100%;
     max-width: none;
+    padding: 20px;
+    box-sizing: border-box;
   }
   
   .physical-btn, .nutrition-btn, .module-card button {
     width: 100%;
+  }
+
+  .food-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .physical-page, .nutrition-page {
+    padding: 15px;
   }
 }
 

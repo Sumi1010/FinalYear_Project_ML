@@ -387,3 +387,36 @@
     margin-top: 15px;
     font-weight: 500;
 }
+
+/* Responsive Habit Tracking */
+@media (max-width: 768px) {
+    .habit-tracking-container, .habit-activity-wrapper {
+        padding: 15px;
+    }
+    .habit-header h1 {
+        font-size: 24px;
+    }
+    .habit-header p {
+        font-size: 15px;
+    }
+    .habit-grid {
+        grid-template-columns: 1fr;
+        padding: 10px 0;
+    }
+    .habit-card {
+        padding: 25px 20px;
+    }
+    .activity-card, .completion-card {
+        padding: 25px 20px;
+        margin-top: 30px;
+    }
+    .habit-activity-card {
+        padding: 25px 20px;
+    }
+    .habit-activity-header h2 {
+        font-size: 24px;
+    }
+    .start-btn, .complete-btn, .return-btn {
+        width: 100%;
+    }
+}
