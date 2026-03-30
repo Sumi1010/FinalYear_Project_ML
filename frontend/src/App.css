@@ -1,6 +1,17 @@
 .App {
   text-align: center;
 }
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 .App-logo {
   height: 40vmin;
